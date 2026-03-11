@@ -5,29 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
-class Gateway extends Model
+class Card extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'is_active',
-        'priority'
+        'client_id',
+        'last_four',
+        'expiration_month',
+        'expiration_year'
     ];
 
-    protected function casts(): array
+    public function client(): BelongsTo
     {
-        return [
-            'is_active' => 'boolean'
-        ];
+        return $this->belongsTo(Client::class);
     }
 
     public function transactionAttempts(): HasMany
     {
-        return $this->hasMany(TransactionAttempt::class);
+        return $this->hasMany(TransactionAttempt::class);        
     }
 }
