@@ -1,59 +1,79 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BeTalent Multi-Gateway Payment API - Nível 3
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API RESTful de alta performance desenvolvida para gerenciar checkouts complexos com múltiplos provedores de pagamento. Este projeto foi construído focando em resiliência, segurança transacional e excelência técnica através de TDD e análise estática.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tecnologias e Ferramentas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **PHP 8.3 + Laravel 11**
+- **MySQL 8.0**
+- **Docker + Laravel Sail**
+- **Pest PHP** (Suíte de testes de alta performance)
+- **Larastan/PHPStan** (Análise estática de código - Nível 5)
+- **IDE Helper** (Documentação automática de Eloquent Models)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Diferenciais de Engenharia
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Motor de Checkout com Fallback:** Implementação de um algoritmo de "roleta" que percorre os gateways ativos por ordem de prioridade. Em caso de falha na API externa, o sistema executa automaticamente o fallback para o próximo provedor.
+- **Segurança e Integridade:** Uso rigoroso de `DB::transaction` para garantir a atomicidade entre a criação da venda, o registro dos produtos e as tentativas de cobrança.
+- **TDD (Test Driven Development):** Cobertura de 100% das rotas críticas, validando fluxos de sucesso, falhas controladas, fallbacks e o processo completo de estorno (chargeback).
+- **Cálculo de Carrinho no Back-end:** Prevenção de fraudes garantindo que o valor final seja calculado no servidor, ignorando manipulações de preço via client-side.
+- **Análise Estática Rigorosa:** Código validado via PHPStan para eliminar erros de tipagem e propriedades indefinidas, garantindo manutenibilidade.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Instalação e Execução
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Clonar o Repositório
+```bash
+git clone <url-do-seu-repositorio>
+cd multi-gateways
+```
 
-### Premium Partners
+### 2. Instalar Dependências via Docker
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php83-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. Subir Ambiente e Migrations
+```bash
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan migrate --seed
+```
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Verificações de Qualidade
 
-## Code of Conduct
+### Executar Testes Automatizados
+```bash
+./vendor/bin/sail artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Executar Análise Estática (PHPStan)
+```bash
+./vendor/bin/sail php vendor/bin/phpstan analyse
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Integração com Gateways
 
-## License
+O sistema está configurado para interagir com os mocks da BeTalent:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Provedor   | Endpoint         | Autenticação                     |
+|------------|------------------|----------------------------------|
+| Gateway 1  | `localhost:3001` | Bearer Token                     |
+| Gateway 2  | `localhost:3002` | Custom Headers (Token/Secret)    |
+
+---
+
+> **Desenvolvido por Eduardo Novais como parte do desafio técnico BeTalent.**
