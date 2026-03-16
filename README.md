@@ -1,5 +1,8 @@
 # BeTalent - API de Pagamentos Multi-Gateway - Eduardo Novais
 
+> [!IMPORTANT]
+> **Compatibilidade de Sistema:** Este projeto utiliza Docker e Laravel Sail. Ele pode ser executado em Windows, Linux ou macOS, desde que o Docker esteja instalado. Para usuários **Windows**, é obrigatorio o uso do **WSL2** (Windows Subsystem for Linux) para garantir a compatibilidade dos containers e a performance correta do sistema de arquivos.
+
 Esta é uma API RESTful desenvolvida para o gerenciamento de pagamentos multi-gateway. O sistema implementa um fluxo de checkout resiliente: caso o primeiro gateway da fila de prioridade retorne erro, o sistema realiza automaticamente a tentativa no segundo gateway. Se qualquer um deles retornar sucesso, a transação é confirmada sem exibir erros ao usuário final.
 
 Este projeto atende aos requisitos do Nível 3 (Pleno/Sênior) do teste prático da BeTalent Tech.
@@ -20,6 +23,7 @@ Este projeto atende aos requisitos do Nível 3 (Pleno/Sênior) do teste prático
 
 ### Pré-requisitos
 - Docker e Docker Compose instalados.
+- WSL2 configurado (caso esteja no Windows).
 
 ### 1. Clonar o Repositório
 ```bash
