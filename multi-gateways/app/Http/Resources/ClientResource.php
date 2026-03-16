@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\TransactionResource;
 
+/**
+ * @mixin \App\Models\Client
+ */
 class ClientResource extends JsonResource
 {
     /**

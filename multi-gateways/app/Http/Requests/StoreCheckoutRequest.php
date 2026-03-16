@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTransactionRequest extends FormRequest
+class StoreCheckoutRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,14 +22,14 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => 'required|uuid|exists:clients,id',
-            'amount' => 'required|integer|min:0',
-            'status' => 'required|string',
-            'card' => 'required|array:last_four,expiration_month,expiration_year',
+            'client_name' => 'required|string',
+            'client_email' => 'required|string|email:rfc,dns',
+            'card' => 'required|array',
             'card.last_four' => 'required|string|max:4',
             'card.expiration_month' => 'required|string|digits:2',
             'card.expiration_year' => 'required|string|digits:4',
-            'products' => 'required|array:id,quantity',
+            'card.cvv' => 'required|string|max:3',
+            'products' => 'required|array',
             'products.*.id' => 'required|integer|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1'
         ];
@@ -38,10 +38,8 @@ class StoreTransactionRequest extends FormRequest
     public function messages(): array 
     {
         return [
-            'client_id.required' => 'Please provide a client_id.',
-            'amount.required' => 'The price is required.',
-            'amount.min' => 'The price must be at least 0.',
-            'status.required' => 'The status field is required.',
+            'client_email.required' => 'Please provide a email.',
+            'client_name.required' => 'Please provide a name.'
         ];
     }
 }

@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Models\Transaction
+ * @mixin \App\Models\Gateway
  */
-class TransactionResource extends JsonResource
+class GatewayResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,10 +18,10 @@ class TransactionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'uuid' => $this->id,
-            'client_id' => $this->when(! $request->is('api/client/*'), $this->client_id),
-            'amount' => $this->amount,
-            'status' => $this->status
+            'id' => $this->id,
+            'name' => $this->name,
+            'is_active' => $this->is_active,
+            'priority' => $this->priority
         ];
     }
 }

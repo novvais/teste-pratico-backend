@@ -19,6 +19,6 @@ class ClientController extends Controller
     {
         $client = Client::with('transactions')->findOrFail($id);
 
-        return response()->json(ClientResource::collection($client));
+        return response()->json(new ClientResource($client));
     }
 }
