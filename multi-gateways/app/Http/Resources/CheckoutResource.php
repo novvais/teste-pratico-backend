@@ -10,11 +10,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class CheckoutResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
@@ -25,7 +20,9 @@ class CheckoutResource extends JsonResource
             'products' => $this->products->map(function ($product) {
                 return [
                     'id' => $product->id,
-                    'quantity' => data_get($product, 'pivot.quantity')
+                    'name' => $product->name,
+                    'quantity' => data_get($product, 'pivot.quantity'),
+                    'unit_price' => data_get($product, 'pivot.unit_amount')
                 ];
             })
         ];

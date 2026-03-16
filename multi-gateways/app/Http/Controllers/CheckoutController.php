@@ -22,12 +22,8 @@ class CheckoutController extends Controller
 
         return DB::transaction(function () use ($validatedData) {
             $client = Client::firstOrCreate(
-                [
-                    'email' => $validatedData['client_email']
-                ],
-                [
-                    'name' => $validatedData['client_name']
-                ]
+                ['email' => $validatedData['client_email']],
+                ['name' => $validatedData['client_name']]
             );
 
             $card = Card::firstOrCreate([
@@ -38,27 +34,27 @@ class CheckoutController extends Controller
             ]);
 
             $ids = array_column($validatedData['products'], 'id');
-
             $products = Product::find($ids);
 
             $totalValue = 0;
             $pivotData = [];
 
-            foreach ($validatedData['products'] as $product) {
-                $findProducts = $products->firstWhere('id', $product['id']);
+            foreach ($validatedData['products'] as $item) {
+                $productModel = $products->firstWhere('id', $item['id']);
+                
+                $totalValue += $productModel->amount * $item['quantity'];
 
-                $totalValue += $findProducts->amount * $product['quantity'];
-
-                $pivotData[$product['id']] = ['quantity' => $product['quantity']];
+                $pivotData[$item['id']] = [
+                    'quantity' => $item['quantity'],
+                    'unit_amount' => $productModel->amount
+                ];
             }
 
-            $payload = [
+            $checkout = Transaction::create([
                 'client_id' => $client->id,
                 'amount' => $totalValue,
                 'status' => 'pending'
-            ];
-
-            $checkout = Transaction::create($payload);
+            ]);
 
             $checkout->products()->attach($pivotData);
 
@@ -92,9 +88,7 @@ class CheckoutController extends Controller
                 }
 
                 if ($response && $response->successful()) {
-                    $checkout->update([
-                        'status' => 'paid'
-                    ]);
+                    $checkout->update(['status' => 'paid']);
 
                     TransactionAttempt::create([
                         'transaction_id' => $checkout->id,
