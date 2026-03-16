@@ -3,23 +3,42 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Role;
+use App\Models\Gateway;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $adminRole = Role::create(['name' => 'ADMIN']);
+        Role::create(['name' => 'MANAGER']);
+        Role::create(['name' => 'FINANCE']);
+        Role::create(['name' => 'USER']);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $admin = User::create([
+            'email' => 'admin@betalent.tech',
+            'password' => Hash::make('12345678'),
         ]);
+
+        $admin->roles()->attach($adminRole->id);
+
+        Gateway::create([
+            'name' => 'Gateway 1',
+            'is_active' => true,
+            'priority' => 1
+        ]);
+
+        Gateway::create([
+            'name' => 'Gateway 2',
+            'is_active' => true,
+            'priority' => 2
+        ]);
+
+        Product::create(['name' => 'Smartphone', 'amount' => 150000, 'stock' => 50]);
+        Product::create(['name' => 'Notebook', 'amount' => 450000, 'stock' => 20]);
+        Product::create(['name' => 'Mouse Gamer', 'amount' => 25000, 'stock' => 100]);
     }
 }
