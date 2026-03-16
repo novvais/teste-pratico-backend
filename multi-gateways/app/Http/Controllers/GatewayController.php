@@ -9,6 +9,13 @@ use App\Models\Gateway;
 
 class GatewayController extends Controller
 {
+    public function index()
+    {
+        $gateways = Gateway::orderBy('priority')->get();
+
+        return response()->json(GatewayResource::collection($gateways), 200);
+    }
+
     /**
      * Update the specified resource in storage.
      */

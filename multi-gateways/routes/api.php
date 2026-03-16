@@ -11,16 +11,19 @@ use App\Http\Controllers\TransactionController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/checkout', [CheckoutController::class, 'store']);
+Route::post('/transactions', [CheckoutController::class, 'store']);
 
-Route::middleware('auth:sanctum', 'role:ADMIN')->patch('/gateway/{id}', [GatewayController::class, 'update']);
+Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
+    Route::patch('/gateway/{id}', [GatewayController::class, 'update']);
+    Route::get('/gateways', [GatewayController::class, 'index']);
+});
 
 Route::prefix('clients')->controller(ClientController::class)->middleware('auth:sanctum')->group(function () {
     Route::get('/', 'index');
     Route::get('/{id}', 'show');
 });
 
-Route::prefix('products')->controller(ProductController::class)->middleware('auth:sanctum', 'role:ADMIN,MANAGER,FINANCE')->group(function () {
+Route::prefix('products')->controller(ProductController::class)->middleware(['auth:sanctum', 'role:ADMIN,MANAGER,FINANCE'])->group(function () {
     Route::get('/', 'index');
     Route::get('/{id}', 'show');
     Route::post('/', 'store');
@@ -28,7 +31,7 @@ Route::prefix('products')->controller(ProductController::class)->middleware('aut
     Route::delete('/{id}', 'destroy');
 });
 
-Route::prefix('users')->controller(UserController::class)->middleware('auth:sanctum')->group(function () {
+Route::prefix('users')->controller(UserController::class)->middleware(['auth:sanctum', 'role:ADMIN,MANAGER'])->group(function () {
     Route::get('/', 'index');
     Route::get('/{id}', 'show');
     Route::post('/', 'store');
