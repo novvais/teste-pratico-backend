@@ -58,7 +58,7 @@ test('ADMIN can refund a transaction', function () {
     ]);
 
     Http::fake([
-        'localhost:3001/transactions/ext_123/charge_back*' => Http::response([], 200)
+        '*3001/transactions/ext_123/charge_back*' => Http::response([], 200)
     ]);
 
     $response = $this->actingAs($user)->postJson("/api/transactions/{$transaction->id}/chargeback");

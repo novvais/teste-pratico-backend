@@ -1,13 +1,16 @@
 <?php
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 pest()->use(RefreshDatabase::class);
 
 test('can list all users', function () {
-    $admin = User::factory()->create(['password' => '12345678']);
-    
+    $role = Role::factory()->create(['name' => 'ADMIN']);
+    $admin = User::factory()->create();
+    $admin->roles()->attach($role->id);
+
     User::factory()->count(2)->create();
 
     $response = $this->actingAs($admin)->getJson('/api/users');
@@ -18,11 +21,15 @@ test('can list all users', function () {
 });
 
 test('can create a new user', function () {
-    $admin = User::factory()->create(['password' => '12345678']);
+    $role = Role::factory()->create(['name' => 'ADMIN']);
+    $admin = User::factory()->create();
+    $admin->roles()->attach($role->id);
 
     $response = $this->actingAs($admin)->postJson('/api/users', [
+        'name' => 'Novo Usuario',
         'email' => 'novo@betalent.tech',
-        'password' => '12345678'
+        'password' => '12345678',
+        'role' => 'MANAGER'
     ]);
 
     $response->assertStatus(201);
@@ -31,9 +38,11 @@ test('can create a new user', function () {
 });
 
 test('can update a user', function () {
-    $admin = User::factory()->create(['password' => '12345678']);
-    
-    $user = User::factory()->create(['email' => 'velho@betalent.tech', 'password' => '12345678']);
+    $role = Role::factory()->create(['name' => 'ADMIN']);
+    $admin = User::factory()->create();
+    $admin->roles()->attach($role->id);
+
+    $user = User::factory()->create();
 
     $response = $this->actingAs($admin)->patchJson("/api/users/{$user->id}", [
         'email' => 'atualizado@betalent.tech'
@@ -45,8 +54,10 @@ test('can update a user', function () {
 });
 
 test('can delete a user', function () {
-    $admin = User::factory()->create(['password' => '12345678']);
-    
+    $role = Role::factory()->create(['name' => 'ADMIN']);
+    $admin = User::factory()->create();
+    $admin->roles()->attach($role->id);
+
     $user = User::factory()->create(['password' => '12345678']);
 
     $response = $this->actingAs($admin)->deleteJson("/api/users/{$user->id}");

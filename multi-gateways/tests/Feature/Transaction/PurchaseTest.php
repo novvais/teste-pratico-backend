@@ -37,7 +37,7 @@ test('checkout', function () {
         ]
     ];
 
-    $response = $this->postJson('/api/checkout', $payload);
+    $response = $this->postJson('/api/transactions', $payload);
 
     $response->assertStatus(201);
 
@@ -62,8 +62,8 @@ test('it should fallback to second gateway when first fails', function () {
     ]);
 
     Http::fake([
-        'localhost:3001/transactions*' => Http::response([], 400),
-        'localhost:3002/transacoes*' => Http::response(['id_externo' => '123'], 201)
+        '*3001/transactions*' => Http::response([], 400),
+        '*3002/transacoes*' => Http::response(['id_externo' => '123'], 201)
     ]);
 
     $payload = [
@@ -87,7 +87,7 @@ test('it should fallback to second gateway when first fails', function () {
         ]
     ];
 
-    $response = $this->postJson('/api/checkout', $payload);
+    $response = $this->postJson('/api/transactions', $payload);
 
     $response->assertStatus(201);
 
