@@ -61,7 +61,10 @@ test('can show a specific transaction', function () {
         'status' => 'paid'
     ]);
 
-    $transaction->products()->attach($product->id, ['quantity' => 1]);
+    $transaction->products()->attach($product->id, [
+        'quantity' => 1,
+        'unit_amount' => $product->amount
+    ]);
 
     $response = $this->actingAs($user)->getJson("/api/transactions/{$transaction->id}");
 
