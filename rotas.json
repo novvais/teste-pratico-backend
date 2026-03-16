@@ -1,0 +1,325 @@
+{
+    "info": {
+        "_postman_id": "betalent-eduardo-novais-vfinal",
+        "name": "BeTalent - Multi-Gateway API Completa",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. Autenticação",
+            "item": [
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.token) {",
+                                    "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@betalent.tech\",\n    \"password\": \"12345678\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Checkout Público",
+            "item": [
+                {
+                    "name": "Criar Transação (Sucesso)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"client_name\": \"Eduardo Novais\",\n    \"client_email\": \"eduardo@betalent.tech\",\n    \"products\": [\n        { \"id\": 1, \"quantity\": 1 },\n        { \"id\": 2, \"quantity\": 2 }\n    ],\n    \"card\": {\n        \"number\": \"5569000000006063\",\n        \"last_four\": \"6063\",\n        \"expiration_month\": \"12\",\n        \"expiration_year\": \"2030\",\n        \"cvv\": \"010\"\n    }\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/transactions", "host": ["{{base_url}}"], "path": ["transactions"] }
+                    }
+                },
+                {
+                    "name": "Criar Transação (Forçar Fallback)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"client_name\": \"Cliente Fallback\",\n    \"client_email\": \"fallback@teste.com\",\n    \"products\": [\n        { \"id\": 1, \"quantity\": 1 }\n    ],\n    \"card\": {\n        \"number\": \"5569000000006063\",\n        \"last_four\": \"6063\",\n        \"expiration_month\": \"12\",\n        \"expiration_year\": \"2030\",\n        \"cvv\": \"100\"\n    }\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/transactions", "host": ["{{base_url}}"], "path": ["transactions"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Gateways",
+            "item": [
+                {
+                    "name": "Listar Gateways",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/gateways", "host": ["{{base_url}}"], "path": ["gateways"] }
+                    }
+                },
+                {
+                    "name": "Atualizar Gateway",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"priority\": 2,\n    \"is_active\": true\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/gateways/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["gateways", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. Clientes",
+            "item": [
+                {
+                    "name": "Listar Clientes",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/clients", "host": ["{{base_url}}"], "path": ["clients"] }
+                    }
+                },
+                {
+                    "name": "Detalhar Cliente",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/clients/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["clients", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. Produtos",
+            "item": [
+                {
+                    "name": "Listar Produtos",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"] }
+                    }
+                },
+                {
+                    "name": "Detalhar Produto",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/products/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["products", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                },
+                {
+                    "name": "Criar Produto",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Teclado Mecânico\",\n    \"amount\": 35000,\n    \"stock\": 15\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"] }
+                    }
+                },
+                {
+                    "name": "Atualizar Produto",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"amount\": 30000,\n    \"stock\": 20\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/products/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["products", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                },
+                {
+                    "name": "Deletar Produto",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/products/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["products", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "6. Usuários",
+            "item": [
+                {
+                    "name": "Listar Usuários",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/users", "host": ["{{base_url}}"], "path": ["users"] }
+                    }
+                },
+                {
+                    "name": "Detalhar Usuário",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/users/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["users", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                },
+                {
+                    "name": "Criar Usuário",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Novo Gerente\",\n    \"email\": \"gerente@betalent.tech\",\n    \"password\": \"12345678\",\n    \"role\": \"MANAGER\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/users", "host": ["{{base_url}}"], "path": ["users"] }
+                    }
+                },
+                {
+                    "name": "Atualizar Usuário",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Gerente Atualizado\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        },
+                        "url": { "raw": "{{base_url}}/users/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["users", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                },
+                {
+                    "name": "Deletar Usuário",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/users/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["users", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "7. Transações Privadas",
+            "item": [
+                {
+                    "name": "Listar Transações",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/transactions", "host": ["{{base_url}}"], "path": ["transactions"] }
+                    }
+                },
+                {
+                    "name": "Detalhar Transação",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/transactions/9ad5a620-1b22-4212-8e79-563b8417c805", "host": ["{{base_url}}"], "path": ["transactions", "9ad5a620-1b22-4212-8e79-563b8417c805"] }
+                    }
+                },
+                {
+                    "name": "Solicitar Refund",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{base_url}}/transactions/9ad5a620-1b22-4212-8e79-563b8417c805/chargeback", "host": ["{{base_url}}"], "path": ["transactions", "9ad5a620-1b22-4212-8e79-563b8417c805", "chargeback"] }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api"
+        },
+        {
+            "key": "token",
+            "value": ""
+        }
+    ]
+}
