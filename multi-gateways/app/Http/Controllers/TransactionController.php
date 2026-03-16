@@ -38,14 +38,14 @@ class TransactionController extends Controller
 
         if ($gateway->name === 'Gateway 1') {
             $response = Http::withToken('FEC9BB078BF338F464F96B48089EB498')
-                ->post("http://localhost:3001/transactions/{$attempt->external_id}/charge_back");
+                ->post(env('GATEWAY1_URL') . "/transactions/{$attempt->external_id}/charge_back");
         }
 
         if ($gateway->name === 'Gateway 2') {
             $response = Http::withHeaders([
                 'Gateway-Auth-Token' => 'tk_f2198cc671b5289fa856',
                 'Gateway-Auth-Secret' => '3d15e8ed6131446ea7e3456728b1211f'
-            ])->post('http://localhost:3002/transacoes/reembolso', [
+            ])->post(env('GATEWAY2_URL') . '/transacoes/reembolso', [
                 'id' => $attempt->external_id
             ]);
         }
