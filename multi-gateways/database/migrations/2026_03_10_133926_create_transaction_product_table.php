@@ -12,6 +12,7 @@ return new class extends Migration
             $table->foreignUuid('transaction_id')->constrained();
             $table->foreignId('product_id')->constrained();
             $table->unsignedInteger('quantity');
+            $table->unsignedInteger('unit_amount');
             $table->timestamps();
             $table->softDeletes();
         });

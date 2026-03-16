@@ -62,6 +62,8 @@ class Transaction extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'transaction_product')->withPivot('quantity');
+        return $this->belongsToMany(Product::class, 'transaction_product')
+            ->withPivot('quantity', 'unit_amount')
+            ->withTimestamps();
     }
 }
