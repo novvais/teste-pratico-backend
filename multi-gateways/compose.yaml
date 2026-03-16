@@ -23,6 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
+            - gateways
     mysql:
         image: 'mysql:8.4'
         ports:
@@ -48,6 +49,13 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+    gateways:
+        image: 'matheusprotzen/gateways-mock'
+        ports:
+            - '3001:3001'
+            - '3002:3002'
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
